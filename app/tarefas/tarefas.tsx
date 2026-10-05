@@ -1,0 +1,64 @@
+import Botao from "@/components/Botao";
+import TarefaCard from "@/components/TarefaCard";
+import { router } from "expo-router";
+import { FlatList, SectionList, Text, View } from "react-native";
+import { styles } from "@/styles/global";
+import { carregarTarefas } from "@/utils/armazenamento";
+import { useEffect, useState } from "react";
+
+type Tarefa = {
+    id: string;
+    titulo: string;
+    descricao: string;
+    prioridade: string;
+}
+
+export default function Tarefas() {
+
+    const [tarefas, setTarefas] = useState<Tarefa[]>([])
+
+    useEffect(()=>{
+        async function carregar() {
+            const dados = await carregarTarefas();
+            setTarefas(dados);
+        }
+        carregar();
+    }, []);
+
+
+    return (
+        <View style={styles.container}>
+            <Text style={styles.titulo}>Minhas Tarefas</Text>
+
+            <FlatList
+                data={tarefas}
+                contentContainerStyle={{padding: 25}}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => (
+                            <>
+                                <TarefaCard
+                                    titulo={item.titulo}
+                                    descricao={item.descricao}
+                                    prioridade={item.prioridade}
+                                />
+                            </>
+
+                )}
+
+                ListEmptyComponent={
+                    <Text>Nenhuma tarefa na lista</Text>
+                }
+
+            />
+
+            <Botao
+                texto="Add +"
+                onPress={()=>router.push("/tarefas/addTarefas")}
+            />
+            <Botao
+                texto="Configurações"
+                onPress={()=>router.push("/configuracoes")}
+            />
+        </View>
+    )
+}

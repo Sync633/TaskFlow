@@ -1,40 +1,21 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Text, StyleSheet } from "react-native";
 
-interface TCProps {
-  titulo: string;
-  descricao: string;
-  prioridade: string;
+interface TituloProps{
+    texto: string
 }
 
-export default function TarefaCard({ titulo, descricao, prioridade }: TCProps) {
-  return (
-    <View
-      style={[
-        styles.tarefa,
-        prioridade === "Alta" && { borderLeftColor: "red" },
-        prioridade === "Media" && { borderLeftColor: "yellow" },
-      ]}
-    >
-      <Text style={styles.titulo}>{titulo}</Text>
-      <Text style={styles.descricao}>{descricao}</Text>
-    </View>
-  );
+export default function Titulo({texto} : TituloProps){
+
+    return(
+        <Text style={styles.titulo}>{texto}</Text>
+    )
 }
 
 const styles = StyleSheet.create({
-  tarefa: {
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#cacacaff",
-    borderRadius: 8,
-    padding: 15,
-    borderLeftWidth: 4,
-  },
-  titulo: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  descricao: {
-    fontSize: 13,
-  },
-});
+    titulo:{
+        fontSize: 34,
+        fontWeight: "bold",
+        color: '#2c61b6ff',
+        marginBottom: 10
+    },
+})
