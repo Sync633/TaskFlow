@@ -15,6 +15,10 @@ const exercicios = [
     nome: "Exerc da Aula 13 - Axios",
     rota: "/atividades/ex_axios",
   },
+  {
+    nome: "Seleção de Imagens",
+    rota: "/atividades/libraryImage"
+  }
 ] as const;
 
 export default function Atividades() {
