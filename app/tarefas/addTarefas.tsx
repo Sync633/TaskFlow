@@ -1,14 +1,35 @@
 import Botao from "@/components/Botao";
 import { carregarTarefas, salvarTarefas } from "@/utils/armazenamento";
-import { router } from "expo-router";
-import { useState } from "react";
+import { router, useLocalSearchParams } from "expo-router";
+import { useState, useEffect } from "react";
 import { View, Text, TextInput, StyleSheet, Alert } from "react-native";
 import { Picker } from '@react-native-picker/picker'
+import { atualizarTarefas, buscarTarefas, criarTarefas } from "@/services/tarefas";
+import TarefaCard from "@/components/TarefaCard";
 
 export default function AddTarefas() {
     const [titulo, setTitulo] = useState("")
     const [descricao, setDescricao] = useState("")
     const [prioridade, setPrioridade] = useState("")
+
+    const {id} = useLocalSearchParams<{id?: string}>()
+
+    useEffect(() => {
+        if (!id) return;
+
+        async function carregar() {
+            try {
+                const dados = await buscarTarefas(id)
+
+                setTitulo(dados.titulo)
+                setDescricao(dados.descricao)
+                setPrioridade(dados.prioridade)
+            } catch (error) {
+                console.log("Erro ao buscar a tarefa", error)
+            }
+        }
+        carregar()
+    }, [id])
 
     async function salvar() {
         if (titulo.trim() === "") {
@@ -24,17 +45,19 @@ export default function AddTarefas() {
         }
 
         const novaTarefa = {
-            id: Date.now().toString(),
             titulo: titulo.trim(),
             descricao: descricao.trim(),
             prioridade: prioridade.trim(),
+            concluida: false
         }
 
-        const tarefas = await carregarTarefas();
+        if (!id) {
+            await criarTarefas(novaTarefa)
+        } else {
+            await atualizarTarefas(id, novaTarefa)
+        }
 
-        const novaLista = [...tarefas, novaTarefa];
-
-        await salvarTarefas(novaLista);
+        await criarTarefas(novaTarefa)
 
         Alert.alert("Sucesso!", "Validação ok, dados salvos com sucesso!");
         router.replace("/tarefas/tarefas");
@@ -43,6 +66,11 @@ export default function AddTarefas() {
     return (
 
         <View style={styles.container}>
+            <TarefaCard 
+                titulo={titulo}
+                descricao={descricao}
+                prioridade={prioridade}
+            />
             <Text style={styles.label}>Título *</Text>
             <TextInput
                 value={titulo}
@@ -74,7 +102,7 @@ export default function AddTarefas() {
 
             <View style={{ alignSelf: 'flex-end' }}>
                 <Botao
-                    texto="Salvar"
+                    texto={id? "Atualizar" : "Salvar"}
                     onPress={salvar}
                 />
             </View>

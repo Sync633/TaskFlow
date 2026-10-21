@@ -8,8 +8,12 @@ const exercicios = [
     rota: "/atividades/ex_aula10",
   },
   {
-    nome: "Exerc da Aula 13",
+    nome: "Exerc da Aula 13 - Fetch",
     rota: "/atividades/ex_fetch",
+  },
+  {
+    nome: "Exerc da Aula 13 - Axios",
+    rota: "/atividades/ex_axios",
   },
 ] as const;
 
